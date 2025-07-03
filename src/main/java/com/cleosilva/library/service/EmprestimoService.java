@@ -18,11 +18,8 @@ import java.util.List;
 
 @Service
 public class EmprestimoService {
-    @Autowired
     private final EmprestimoRepository emprestimoRepository;
-    @Autowired
     private final LivroRepository livroRepository;
-    @Autowired
     private final UsuarioRepository usuarioRepository;
 
     public EmprestimoService(EmprestimoRepository emprestimoRepository,
