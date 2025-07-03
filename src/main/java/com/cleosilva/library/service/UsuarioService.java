@@ -1,5 +1,6 @@
 package com.cleosilva.library.service;
 
+import com.cleosilva.library.exception.UsuarioNaoEncontradoException;
 import com.cleosilva.library.model.Usuario;
 import com.cleosilva.library.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,6 @@ public class UsuarioService {
 
     public Usuario buscaPorId(Long id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+                .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário não encontrado!"));
     }
 }

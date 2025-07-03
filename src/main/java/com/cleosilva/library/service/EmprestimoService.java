@@ -1,5 +1,8 @@
 package com.cleosilva.library.service;
 
+import com.cleosilva.library.exception.LivroDevolvidoException;
+import com.cleosilva.library.exception.LivroIndisponivelException;
+import com.cleosilva.library.exception.UsuarioNaoEncontradoException;
 import com.cleosilva.library.model.Emprestimo;
 import com.cleosilva.library.model.Livro;
 import com.cleosilva.library.model.Usuario;
@@ -10,18 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class EmprestimoService {
     @Autowired
-    private EmprestimoRepository emprestimoRepository;
+    private final EmprestimoRepository emprestimoRepository;
     @Autowired
-    private LivroRepository livroRepository;
+    private final LivroRepository livroRepository;
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
     public EmprestimoService(EmprestimoRepository emprestimoRepository,
                              LivroRepository livroRepository,
@@ -35,10 +37,10 @@ public class EmprestimoService {
         Livro livro = livroRepository.findById(livroId)
                 .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário não encontrado"));
 
         if (!livro.isDisponivel()){
-            throw new RuntimeException(("Livro não está disponível para empréstimo!"));
+            throw new LivroIndisponivelException(("Livro não está disponível para empréstimo!"));
         } else {
             livro.setDisponivel(false);
             livroRepository.save(livro);
@@ -60,7 +62,7 @@ public class EmprestimoService {
                 .orElseThrow(() -> new RuntimeException("Emprestimo não encontrado!"));
 
         if(emprestimo.getDataDevolucao() != null){
-            throw new RuntimeException("Este livro já foi devolvido!");
+            throw new LivroDevolvidoException("Este livro já foi devolvido!");
         }
 
         emprestimo.setDataDevolucao(LocalDate.now());
