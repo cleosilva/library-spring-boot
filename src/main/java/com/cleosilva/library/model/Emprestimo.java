@@ -12,9 +12,11 @@ public class Emprestimo {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "livro_id", nullable = false)
     private Livro livro;
 
     @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
     private LocalDate dataEmprestimo;
@@ -31,6 +33,10 @@ public class Emprestimo {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Livro getLivro() {
@@ -63,5 +69,16 @@ public class Emprestimo {
 
     public void setDataDevolucao(LocalDate dataDevolucao) {
         this.dataDevolucao = dataDevolucao;
+    }
+
+    @Override
+    public String toString() {
+        return "Emprestimo{" +
+                "id=" + id +
+                ", livro=" + livro.getTitulo() +
+                ", usuario=" + usuario.getNome() +
+                ", dataEmprestimo=" + dataEmprestimo +
+                ", dataDevolucao=" + dataDevolucao +
+                '}';
     }
 }

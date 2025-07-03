@@ -3,6 +3,7 @@ package com.cleosilva.library.exception;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -13,7 +14,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleLivroIndisponivel(LivroIndisponivelException ex, HttpServletRequest request) {
         ApiError error = new ApiError(
                 HttpStatus.BAD_REQUEST.value(),
-                "Livro Indisponível.",
+                "Livro indisponível.",
                 ex.getMessage(),
                 request.getRequestURI()
         );
@@ -54,4 +55,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiError> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
+        String mensagem = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(field -> field.getField() + ": " + field.getDefaultMessage())
+                .findFirst()
+                .orElse("Erro de validação");
+
+        ApiError error = new ApiError(
+                HttpStatus.BAD_REQUEST.value(),
+                "Erro de validação",
+                mensagem,
+                request.getRequestURI()
+        );
+        return ResponseEntity.badRequest().body(error);
+    }
 }

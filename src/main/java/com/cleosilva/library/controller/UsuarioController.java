@@ -11,7 +11,7 @@ import java.util.List;
 @RequestMapping("/users")
 public class UsuarioController {
 
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
@@ -23,9 +23,10 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> listAllUsers(){
+    public ResponseEntity<List<Usuario>> listUsers(){
         return ResponseEntity.ok(usuarioService.listarUsuarios());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> findUserById(@PathVariable Long id){
         return ResponseEntity.ok(usuarioService.buscaPorId(id));

@@ -10,9 +10,11 @@ import java.util.Optional;
 
 @Service
 public class LivroService {
-    @Autowired
     private  LivroRepository livroRepository;
 
+    public LivroService(LivroRepository livroRepository) {
+        this.livroRepository = livroRepository;
+    }
 
     public Livro cadastrarLivro(Livro livro){
         return livroRepository.save(livro);
@@ -27,18 +29,18 @@ public class LivroService {
                 .orElseThrow(() -> new RuntimeException("Livro não encontrado!"));
     }
 
-        public Optional<Livro> atualizarLivro(Long id, Livro novoLivro){
-            Optional<Livro> livroOptimal = livroRepository.findById(id);
-            livroOptimal.ifPresent(livro -> {
-                livro.setTitulo(novoLivro.getTitulo());
-                livro.setAutor(novoLivro.getAutor());
-                livro.setAnoPublicacao(novoLivro.getAnoPublicacao());
-                livro.setDisponivel(novoLivro.isDisponivel());
-                livroRepository.save(livro);
-            });
+    public Livro atualizarLivro(Long id, Livro novoLivro){
+        Livro livro = livroRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
+        livro.setTitulo(novoLivro.getTitulo());
+        livro.setAutor(novoLivro.getAutor());
+        livro.setAnoPublicacao(novoLivro.getAnoPublicacao());
+        livro.setDisponivel(novoLivro.isDisponivel());
+        livroRepository.save(livro);
 
-            return livroOptimal;
-        }
+        return livroRepository.save(livro);
+    }
+
     // remover livro
     public boolean deletarLivro(Long id){
        Optional<Livro> livroOptional = livroRepository.findById(id);
